@@ -17,18 +17,10 @@ An end-to-end ML pipeline that ingests **live NOAA ocean buoy data**, engineers 
 
 ## Run It
 \\ash
-python data_fetch.py    # fetch live buoy data
-python preprocess.py    # clean and engineer features
-python model.py         # train anomaly detector
-streamlit run app.py    # launch dashboard
-\\n
-## Project Structure
-\\nocean-anomaly-detection/
-├── data_fetch.py      # Downloads NOAA buoy data
-├── preprocess.py      # Feature engineering
-├── model.py           # Isolation Forest training
-├── app.py             # Streamlit dashboard
-└── data/              # Raw + processed CSVs
-\\n
+python data_fetch.py
+python preprocess.py
+python model.py
+streamlit run app.py
+\
 ## Real-World Application
 Mirrors subsea monitoring systems used for offshore pipeline integrity, early warning of oceanographic anomalies, and equipment failure detection on marine platforms.
