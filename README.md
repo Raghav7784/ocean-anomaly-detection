@@ -6,7 +6,9 @@ Built as a demonstration of applied ML for marine technology and subsea monitori
 
 Live dashboard running at localhost:8501 — showing 38,458 readings across 6 buoys with 1,923 anomalies flagged.
 
+
 ![Dashboard](dashboard.png)
+
 
 🚀 What It Does
 
