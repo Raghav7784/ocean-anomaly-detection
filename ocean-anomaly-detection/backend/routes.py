@@ -34,3 +34,36 @@ async def get_stats():
         "total_anomalies": total_anomalies,
         "buoys_monitored": len(buoys)
     }
+
+@router.get("/buoy_stats")
+async def get_buoy_stats():
+    buoys = await buoy_collection.distinct("buoy_id")
+    result = []
+    for b in buoys:
+        total = await buoy_collection.count_documents({"buoy_id": b})
+        anomalies = await anomaly_collection.count_documents({"buoy_id": b})
+        pct = round((anomalies / total * 100), 1) if total > 0 else 0
+        result.append({"buoy_id": b, "total": total, "anomalies": anomalies, "anomaly_pct": pct})
+    return {"buoy_stats": result}
+
+@router.get("/heatmap")
+async def get_heatmap():
+    result = []
+    for hour in range(0, 24, 2):
+        count = await anomaly_collection.count_documents({
+            "$expr": {"$eq": [{"$hour": "$timestamp"}, hour]}
+        })
+        result.append({"hour": hour, "count": count})
+    return {"heatmap": result}
+
+@router.get("/test_alert")
+async def test_alert():
+    from backend.alerts import send_anomaly_alert
+    from datetime import datetime
+    result = send_anomaly_alert(
+        buoy_id="42001",
+        timestamp=datetime.now(),
+        anomaly_score=-0.1523,
+        sensor_data={"WTMP": 28.5, "ATMP": 26.1, "PRES": 1008.3, "WSPD": 15.2}
+    )
+    return {"email_sent": result}

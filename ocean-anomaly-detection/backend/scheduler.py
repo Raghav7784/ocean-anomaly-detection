@@ -115,6 +115,20 @@ async def fetch_and_store():
                 )
             anomalies = [r for r in records if r.get("is_anomaly") == -1]
             for rec in anomalies:
+                if anomalies:
+                  from backend.alerts import send_anomaly_alert
+                  worst = min(anomalies, key=lambda x: x.get("anomaly_score", 0))
+                  send_anomaly_alert(
+                    buoy_id=worst["buoy_id"],
+                    timestamp=worst["timestamp"],
+                    anomaly_score=worst.get("anomaly_score", 0),
+                    sensor_data={
+                        "WTMP": worst.get("WTMP"),
+                        "ATMP": worst.get("ATMP"),
+                        "PRES": worst.get("PRES"),
+                        "WSPD": worst.get("WSPD")
+                    }
+                )
                 await anomaly_collection.update_one(
                     {"buoy_id": rec["buoy_id"], "timestamp": rec["timestamp"]},
                     {"$set": rec},
